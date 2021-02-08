@@ -1,7 +1,7 @@
 # Open95Keygen GNUmakefile, N/A for classic Mac OS
 version := 1.0
 
-sm64gsw: clean
+o95kg: clean
 	gcc o95kg.c -o o95kg
 	
 all: linux-static64 linux-static32 cross-win32
