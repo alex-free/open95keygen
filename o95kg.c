@@ -32,6 +32,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -43,96 +44,69 @@ typedef enum { FALSE, TRUE } bool;
 
 bool gen;
 
-int oem_key_year[2];
+int oem_key_year[2] = {0, 0}; // 2 - gen_oem_year
 int oem_key_5[5];
 int oem_key_5_random[5];
 int retail_key_1[3];
 int retail_key_2[7];
 
-int oem_key_day;
+int oem_key_day = 0; // 1 - gen_oem_day
 int digit;
 int sum7;
 
 void gen_oem_day() 
 {
-    gen = TRUE;
-    while(gen) 
-    {
-        oem_key_day = rand() % OEM_DAY_RANGE;
-
-        if(oem_key_day == 0)
-        {
-            gen = TRUE;
-        }
-        else
-        {
-            gen = FALSE;
-        }
-    }
+  do
+  {
+    oem_key_day = rand() % OEM_DAY_RANGE;
+  }
+  while(oem_key_day == 0);
 }
-
 
 void gen_oem_year() 
 {
-    gen = TRUE;
-    while(gen) 
+    do
     {
-        for(digit=0; digit<2; ++digit)
-        oem_key_year[digit] = rand() % DIGIT_RANGE;
-
-        if((oem_key_year[0] == 9 && oem_key_year[1] >= 5) || (oem_key_year[0] == 0 && oem_key_year[1] < 3))
+        for(digit = 0; digit < 2; ++digit)
         {
-            gen = FALSE;
-        }
-        else
-        {
-            gen = TRUE;
+            oem_key_year[digit] = rand() % DIGIT_RANGE;
         }
     }
+    while((oem_key_year[0] != 9 && oem_key_year[1] < 5) || (oem_key_year[0] != 0 && oem_key_year[1] >= 3));
 }
 
 void gen_5digits_oem()
 {
-    gen = TRUE;
-    while(gen)
+    do
     {
-        for(digit=0; digit<5; ++digit)
-        oem_key_5[digit] = rand() % DIGIT_RANGE;
-
+        for(digit = 0; digit < 5; ++digit)
+        {
+            oem_key_5[digit] = rand() % DIGIT_RANGE;
+        }
         sum7 = oem_key_5[0] + oem_key_5[1] + oem_key_5[2] + oem_key_5[3] + oem_key_5[4];
-
-        if(sum7 % 7 == 0)
-        {
-            gen = FALSE;
-        }
-        else
-        {
-            gen = TRUE;
-        }
     }
+    while(sum7 % 7 != 0);
 }
 
 void gen_5digits_random_oem()
 {
-    for(digit=0; digit<5; ++digit)
-    oem_key_5_random[digit] = rand() % DIGIT_RANGE;   
+    for(digit = 0 ; digit < 5; ++digit)
+    {
+        oem_key_5_random[digit] = rand() % DIGIT_RANGE;
+    }
 }
-
-
 
 void gen_3digits_retail() 
 {
     gen = TRUE;
     while(gen) 
     {
-        for(digit=0; digit<3; ++digit)
+        for(digit = 0; digit < 3; ++digit)
         retail_key_1[digit] = rand() % DIGIT_RANGE;
-
 
         if((retail_key_1[0] == 3 && retail_key_1[1] == 3 && retail_key_1[2] == 3) || (retail_key_1[0] == 4 && retail_key_1[1] == 4 && retail_key_1[2] == 4) || (retail_key_1[0] == 5 && retail_key_1[1] == 5 && retail_key_1[2] == 5) || (retail_key_1[0] == 6 && retail_key_1[1] == 6 && retail_key_1[2] == 6) || (retail_key_1[0] == 7 && retail_key_1[1] == 7 && retail_key_1[2] == 7) || (retail_key_1[0] == 8 && retail_key_1[1] == 8 && retail_key_1[2] == 8) || (retail_key_1[0] == 9 && retail_key_1[1] == 9 && retail_key_1[2] == 9))
         {
-            gen = TRUE;
-//printf("generating...");
+            gen = TRUE; //printf("generating...");
         }
         else
         {
@@ -143,25 +117,16 @@ void gen_3digits_retail()
 
 void gen_7digits_retail()
 {
-    gen = TRUE;
-    while(gen)
+    do
     {
-        for(digit=0; digit<7; ++digit)
-        retail_key_2[digit] = rand() % DIGIT_RANGE;
-
+        for(digit = 0; digit < 7; ++digit)
+        {
+            retail_key_2[digit] = rand() % DIGIT_RANGE;
+        }
         sum7 = retail_key_2[0] + retail_key_2[1] + retail_key_2[2] + retail_key_2[3] + retail_key_2[4] + retail_key_2[5] + retail_key_2[6];
-
-        if(sum7 % 7 == 0)
-        {
-            gen = FALSE;
-        }
-        else
-        {
-            gen = TRUE;
-        }
     }
+    while(sum7 % 7 != 0);  
 }
-
 
 int main()
 {
