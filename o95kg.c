@@ -52,6 +52,7 @@ int retail_key_2[7];
 
 int oem_key_day = 0; // 1 - gen_oem_day
 int digit;
+int i;
 int sum7;
 
 void gen_oem_day() 
@@ -67,9 +68,9 @@ void gen_oem_year()
 {
     do
     {
-        for(digit = 0; digit < 2; ++digit)
+        for(i = 0; i < 2; i++)
         {
-            oem_key_year[digit] = rand() % DIGIT_RANGE;
+            oem_key_year[i] = rand() % DIGIT_RANGE;
         }
     }
     while((oem_key_year[0] != 9 && oem_key_year[1] < 5) || (oem_key_year[0] != 0 && oem_key_year[1] >= 3));
@@ -79,9 +80,9 @@ void gen_5digits_oem()
 {
     do
     {
-        for(digit = 0; digit < 5; ++digit)
+        for(i = 0; i < 5; i++)
         {
-            oem_key_5[digit] = rand() % DIGIT_RANGE;
+            oem_key_5[i] = rand() % DIGIT_RANGE;
         }
         sum7 = oem_key_5[0] + oem_key_5[1] + oem_key_5[2] + oem_key_5[3] + oem_key_5[4];
     }
