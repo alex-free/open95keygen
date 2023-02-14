@@ -1,29 +1,55 @@
-# Open95Keygen GNUmakefile, N/A for classic Mac OS
-version := 1.0
+# Open95Keygen GNUMakefile by Alex Free
+CC=gcc
+CFLAGS=-Wall -Werror
+VER=1.0.1
 
 o95kg: clean
-	gcc o95kg.c -o o95kg
-	
-all: linux-static64 linux-static32 cross-win32
+	$(CC) $(CFLAGS) o95kg.c -o o95kg
 
-mac-ppc: clean
-	gcc -isysroot/Developer/SDKs/MacOSX10.3.9.sdk -mmacosx-version-min=10.3 -arch ppc o95kg.c -o o95kg
-	mkdir open95keygen_$(version)_mac_os_x_powerpc
-	cp -rv o95kg readme.html license.txt open95keygen_$(version)_mac_os_x_powerpc/
-
-linux-static64: clean
-	gcc -static o95kg.c -o o95kg
-	mkdir open95keygen_$(version)_linux_x86_64
-	cp -rv o95kg readme.html license.txt open95keygen_$(version)_linux_x86_64/
-linux-static32: clean
-	gcc -static -m32 o95kg.c -o o95kg
-	mkdir open95keygen_$(version)_linux_x86
-	cp -rv o95kg readme.html license.txt open95keygen_$(version)_linux_x86/
-cross-win32: clean
-	i686-w64-mingw32-gcc o95kg.c -o o95kg.exe
-	mkdir open95keygen_$(version)_win32
-	cp -rv o95kg.exe readme.html license.txt open95keygen_$(version)_win32/
- 
 clean:
-	rm -rf o95kg o95kg.exe open95keygen_$(version)_linux_x86_64 open95keygen_$(version)_linux_x86 open95keygen_$(version)_win32 open95keygen_$(version)_mac_os_x_powerpc
+	rm -rf o95kg.exe o95kg
 
+linux-x86:
+	make o95kg CFLAGS="-m32 -static -Wall -Werror -Ofast"
+
+linux-x86_64:
+	make o95kg CFLAGS="-static -Wall -Werror -Ofast"
+
+windows-x86:
+	make o95kg CC="i686-w64-mingw32-gcc"
+
+windows-x86_64:
+	make o95kg CC="x86_64-w64-mingw32-gcc"
+
+linux-release:
+	rm -rf open95keygen-$(VER)-$(PLATFORM) open95keygen-$(VER)-$(PLATFORM).zip
+	mkdir open95keygen-$(VER)-$(PLATFORM)
+	cp -rv o95kg images readme.md license.txt open95keygen-$(VER)-$(PLATFORM)
+	chmod -R 777 open95keygen-$(VER)-$(PLATFORM)
+	zip -r open95keygen-$(VER)-$(PLATFORM).zip open95keygen-$(VER)-$(PLATFORM)
+	rm -rf open95keygen-$(VER)-$(PLATFORM)
+
+windows-release:
+	rm -rf open95keygen-$(VER)-$(PLATFORM) open95keygen-$(VER)-$(PLATFORM).zip
+	mkdir open95keygen-$(VER)-$(PLATFORM)
+	cp -rv o95kg.exe images readme.md license.txt open95keygen-$(VER)-$(PLATFORM)
+	chmod -R 777 open95keygen-$(VER)-$(PLATFORM)
+	zip -r open95keygen-$(VER)-$(PLATFORM).zip open95keygen-$(VER)-$(PLATFORM)
+	rm -rf open95keygen-$(VER)-$(PLATFORM)
+
+linux-x86-release: linux-x86
+	make linux-release PLATFORM=linux_x86
+
+linux-x86_64-release: linux-x86_64
+	make linux-release PLATFORM=linux_x86_64
+
+windows-x86-release: windows-x86
+	make windows-release PLATFORM=windows_x86
+
+windows-x86_64-release: windows-x86_64
+	make windows-release PLATFORM=windows_x86_64
+
+clean-zip: clean
+	rm -rf *.zip
+
+all: linux-x86-release linux-x86_64-release windows-x86-release windows-x86_64-release
