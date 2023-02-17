@@ -1,13 +1,16 @@
 # Open95Keygen GNUMakefile by Alex Free
 CC=gcc
 CFLAGS=-Wall -Werror
-VER=1.0.1
+VER=1.0.2
 
 o95kg: clean
 	$(CC) $(CFLAGS) o95kg.c -o o95kg
 
 clean:
 	rm -rf o95kg.exe o95kg
+
+fedora-deps:
+	sudo dnf install zip gcc glibc-devel glibc-devel.i686 glibc-static glibc-static.i686 make mingw32-gcc mingw64-gcc
 
 linux-x86:
 	make o95kg CFLAGS="-m32 -static -Wall -Werror -Ofast"
